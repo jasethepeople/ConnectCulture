@@ -8,6 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { isUnauthorizedError } from "@/lib/authUtils";
+import { MediaShareDialog } from "@/components/MediaShareDialog";
+import { MediaEmbed } from "@/components/MediaEmbed";
+import { CommentSection } from "@/components/CommentSection";
 import { 
   Home as HomeIcon, 
   Users, 
@@ -16,7 +19,10 @@ import {
   Palette,
   TrendingUp,
   Calendar,
-  Eye
+  Eye,
+  Heart,
+  MessageCircle,
+  Plus
 } from "lucide-react";
 
 export default function Home() {
@@ -155,30 +161,92 @@ export default function Home() {
 
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Recent Activity */}
+            {/* Create Post */}
+            <Card className="glass-effect bg-transparent border-white/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Plus className="h-5 w-5 text-[hsl(151,100%,50%)]" />
+                  Share Something Amazing
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <MediaShareDialog />
+                  <Button 
+                    variant="outline" 
+                    className="border-gray-700 hover:bg-gray-800"
+                    onClick={() => window.location.href = '/files'}
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Upload Files
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Posts Feed */}
             <Card className="glass-effect bg-transparent border-white/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-[hsl(217,91%,60%)]" />
-                  Recent Activity
+                  Recent Posts
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {posts && posts.length > 0 ? (
-                    posts.slice(0, 5).map((post: any, index: number) => (
-                      <div key={index} className="border-l-2 border-[hsl(151,100%,50%)] pl-4">
-                        <p className="text-sm">{post.content}</p>
-                        <span className="text-xs text-gray-400">
-                          {new Date(post.createdAt).toLocaleString()}
-                        </span>
+                    posts.map((post: any) => (
+                      <div key={post.id} className="p-4 rounded-lg bg-[hsl(240,29%,11%)] border border-gray-700">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-gradient-to-r from-[hsl(256,87%,66%)] to-[hsl(151,100%,50%)] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                              {post.authorId?.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="font-medium">{post.authorId}</p>
+                              <p className="text-sm text-gray-400">
+                                {new Date(post.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {post.isPublic ? 'Public' : 'Private'}
+                          </Badge>
+                        </div>
+                        
+                        {post.content && (
+                          <p className="text-gray-300 mb-3">{post.content}</p>
+                        )}
+                        
+                        {/* Media embed */}
+                        {post.mediaUrl && (
+                          <div className="mb-4">
+                            <MediaEmbed
+                              url={post.mediaUrl}
+                              platform={post.mediaPlatform || 'link'}
+                              title={post.mediaTitle}
+                              description={post.mediaDescription}
+                              thumbnail={post.mediaThumbnail}
+                            />
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center gap-4 mb-4">
+                          <Button variant="ghost" size="sm" className="text-gray-400 hover:text-[hsl(0,79%,70%)]">
+                            <Heart className="h-4 w-4 mr-1" />
+                            {post.likes || 0}
+                          </Button>
+                        </div>
+                        
+                        {/* Comments Section */}
+                        <CommentSection postId={post.id} />
                       </div>
                     ))
                   ) : (
                     <div className="text-center py-8">
                       <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-400">No recent activity yet.</p>
-                      <p className="text-sm text-gray-500">Start by creating your first post!</p>
+                      <p className="text-gray-400">No posts yet. Share something awesome!</p>
+                      <p className="text-sm text-gray-500">Try sharing a YouTube video or posting your thoughts!</p>
                     </div>
                   )}
                 </div>

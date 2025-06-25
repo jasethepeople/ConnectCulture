@@ -91,6 +91,12 @@ export const posts = pgTable("posts", {
   authorId: varchar("author_id").references(() => users.id).notNull(),
   isPublic: boolean("is_public").default(true),
   likes: integer("likes").default(0),
+  mediaType: varchar("media_type"), // video, link, image, text
+  mediaUrl: text("media_url"), // external video/link URL
+  mediaPlatform: varchar("media_platform"), // youtube, rumble, bitchute, x, etc
+  mediaTitle: text("media_title"),
+  mediaDescription: text("media_description"),
+  mediaThumbnail: text("media_thumbnail"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
