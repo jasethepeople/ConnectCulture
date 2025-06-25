@@ -256,6 +256,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await storage.incrementDownloadCount(parseInt(id));
       
+      // For demo files, return placeholder content
+      if (file.uploadedBy === 'demo-user-123') {
+        res.setHeader('Content-Disposition', `attachment; filename="${file.originalName}"`);
+        res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
+        const content = `Demo file: ${file.originalName}\nSize: ${(file.size / 1024 / 1024).toFixed(2)} MB\nType: ${file.mimeType}\nThis is a demo file for SpaceLink platform showcase.`;
+        res.status(200).send(content);
+        return;
+      }
+      
       const filePath = path.join(process.cwd(), file.filePath);
       if (!fs.existsSync(filePath)) {
         return res.status(404).json({ message: "File not found on disk" });
@@ -417,6 +426,133 @@ export async function registerRoutes(app: Express): Promise<Server> {
         clients.delete(userId);
       }
     });
+  });
+
+  // Apps routes
+  app.get('/api/apps', async (req, res) => {
+    try {
+      const { category, search } = req.query;
+      const apps = await storage.getApps(
+        category as string,
+        search as string
+      );
+      res.json(apps);
+    } catch (error) {
+      console.error("Error fetching apps:", error);
+      res.status(500).json({ message: "Failed to fetch apps" });
+    }
+  });
+
+  app.get('/api/user-apps', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const userApps = await storage.getUserApps(userId);
+      res.json(userApps);
+    } catch (error) {
+      console.error("Error fetching user apps:", error);
+      res.status(500).json({ message: "Failed to fetch user apps" });
+    }
+  });
+
+  app.post('/api/apps/:id/install', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { id } = req.params;
+      const userApp = await storage.installApp(userId, parseInt(id));
+      await storage.updateAppInstallCount(parseInt(id));
+      res.json(userApp);
+    } catch (error) {
+      console.error("Error installing app:", error);
+      res.status(500).json({ message: "Failed to install app" });
+    }
+  });
+
+  app.delete('/api/user-apps/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      await storage.uninstallApp(parseInt(id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error uninstalling app:", error);
+      res.status(500).json({ message: "Failed to uninstall app" });
+    }
+  });
+
+  // Health routes
+  app.get('/api/health-discussions', async (req, res) => {
+    try {
+      const discussions = await storage.getHealthDiscussions();
+      res.json(discussions);
+    } catch (error) {
+      console.error("Error fetching health discussions:", error);
+      res.status(500).json({ message: "Failed to fetch health discussions" });
+    }
+  });
+
+  app.post('/api/health-discussions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const discussionData = {
+        ...req.body,
+        author_id: userId,
+      };
+      const discussion = await storage.createHealthDiscussion(discussionData);
+      res.json(discussion);
+    } catch (error) {
+      console.error("Error creating health discussion:", error);
+      res.status(500).json({ message: "Failed to create health discussion" });
+    }
+  });
+
+  app.get('/api/ride-shares', async (req, res) => {
+    try {
+      const rideShares = await storage.getRideShares();
+      res.json(rideShares);
+    } catch (error) {
+      console.error("Error fetching ride shares:", error);
+      res.status(500).json({ message: "Failed to fetch ride shares" });
+    }
+  });
+
+  app.post('/api/ride-shares', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const rideShareData = {
+        ...req.body,
+        created_by: userId,
+      };
+      const rideShare = await storage.createRideShare(rideShareData);
+      res.json(rideShare);
+    } catch (error) {
+      console.error("Error creating ride share:", error);
+      res.status(500).json({ message: "Failed to create ride share" });
+    }
+  });
+
+  // Safety routes
+  app.get('/api/safety-discussions', async (req, res) => {
+    try {
+      const discussions = await storage.getSafetyDiscussions();
+      res.json(discussions);
+    } catch (error) {
+      console.error("Error fetching safety discussions:", error);
+      res.status(500).json({ message: "Failed to fetch safety discussions" });
+    }
+  });
+
+  app.post('/api/safety-discussions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const discussionData = {
+        ...req.body,
+        author_id: userId,
+      };
+      const discussion = await storage.createSafetyDiscussion(discussionData);
+      res.json(discussion);
+    } catch (error) {
+      console.error("Error creating safety discussion:", error);
+      res.status(500).json({ message: "Failed to create safety discussion" });
+    }
   });
 
   // Age verification routes

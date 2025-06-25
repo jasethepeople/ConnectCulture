@@ -29,7 +29,8 @@ import {
   WifiOff,
   Search,
   ExternalLink,
-  Settings
+  Settings,
+  Plus
 } from "lucide-react";
 
 interface TorConnection {

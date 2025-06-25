@@ -520,9 +520,9 @@ export class DatabaseStorage implements IStorage {
     const result = await db.execute(sql`
       SELECT rs.*, u.first_name, u.last_name
       FROM ride_shares rs
-      LEFT JOIN users u ON rs.user_id = u.id
-      WHERE rs.is_active = true AND rs.date_time > NOW()
-      ORDER BY rs.date_time ASC
+      LEFT JOIN users u ON rs.created_by = u.id
+      WHERE rs.is_active = true AND rs.travel_date >= CURRENT_DATE
+      ORDER BY rs.travel_date ASC
     `);
     return result.rows;
   }
