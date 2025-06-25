@@ -21,7 +21,8 @@ import {
   Settings,
   LogOut,
   Menu,
-  Plus
+  Plus,
+  Store
 } from "lucide-react";
 
 export function Navigation() {
@@ -34,6 +35,7 @@ export function Navigation() {
     { path: "/profile", label: "Profile", icon: User },
     { path: "/files", label: "Files", icon: FileText },
     { path: "/messages", label: "Messages", icon: MessageSquare },
+    { path: "/apps", label: "Apps", icon: Store },
     { path: "/customize", label: "Customize", icon: Palette },
   ];
 

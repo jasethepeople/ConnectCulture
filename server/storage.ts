@@ -75,6 +75,14 @@ export interface IStorage {
   // Profile view operations
   recordProfileView(viewerId: string | null, profileId: string): Promise<void>;
   getProfileViewCount(profileId: string): Promise<number>;
+  
+  // App operations
+  getApps(category?: string, search?: string): Promise<any[]>;
+  getAppById(id: number): Promise<any | undefined>;
+  installApp(userId: string, appId: number): Promise<any>;
+  uninstallApp(userAppId: number): Promise<void>;
+  getUserApps(userId: string): Promise<any[]>;
+  updateAppInstallCount(appId: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -352,6 +360,121 @@ export class DatabaseStorage implements IStorage {
       .from(profileViews)
       .where(eq(profileViews.profileId, profileId));
     return result.count;
+  }
+
+  // App operations
+  async getApps(category?: string, search?: string): Promise<any[]> {
+    let query = db
+      .select()
+      .from(apps)
+      .where(eq(apps.isActive, true))
+      .orderBy(desc(apps.installCount));
+
+    const results = await query;
+    let filtered = results;
+
+    if (category && category !== 'all') {
+      filtered = filtered.filter(app => app.category === category);
+    }
+
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filtered = filtered.filter(app => 
+        app.name.toLowerCase().includes(searchLower) ||
+        app.description.toLowerCase().includes(searchLower) ||
+        app.shortDescription.toLowerCase().includes(searchLower) ||
+        app.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+      );
+    }
+
+    return filtered;
+  }
+
+  async getAppById(id: number): Promise<any | undefined> {
+    const result = await db
+      .select()
+      .from(apps)
+      .where(eq(apps.id, id))
+      .limit(1);
+    
+    return result[0];
+  }
+
+  async installApp(userId: string, appId: number): Promise<any> {
+    const existing = await db
+      .select()
+      .from(userApps)
+      .where(and(eq(userApps.userId, userId), eq(userApps.appId, appId)))
+      .limit(1);
+    
+    if (existing.length > 0) {
+      throw new Error('App already installed');
+    }
+
+    const userAppCount = await db
+      .select({ count: count() })
+      .from(userApps)
+      .where(eq(userApps.userId, userId));
+    
+    const position = (userAppCount[0]?.count || 0) + 1;
+
+    const result = await db
+      .insert(userApps)
+      .values({
+        userId,
+        appId,
+        position,
+        settings: {},
+        isVisible: true,
+      })
+      .returning();
+
+    await this.updateAppInstallCount(appId);
+    return result[0];
+  }
+
+  async uninstallApp(userAppId: number): Promise<void> {
+    await db
+      .delete(userApps)
+      .where(eq(userApps.id, userAppId));
+  }
+
+  async getUserApps(userId: string): Promise<any[]> {
+    const result = await db
+      .select({
+        id: userApps.id,
+        appId: userApps.appId,
+        position: userApps.position,
+        settings: userApps.settings,
+        isVisible: userApps.isVisible,
+        installedAt: userApps.installedAt,
+        app: {
+          id: apps.id,
+          name: apps.name,
+          slug: apps.slug,
+          category: apps.category,
+          iconUrl: apps.iconUrl,
+          version: apps.version,
+          author: apps.author,
+          size: apps.size,
+        }
+      })
+      .from(userApps)
+      .leftJoin(apps, eq(userApps.appId, apps.id))
+      .where(eq(userApps.userId, userId))
+      .orderBy(userApps.position);
+
+    return result;
+  }
+
+  async updateAppInstallCount(appId: number): Promise<void> {
+    await db
+      .update(apps)
+      .set({
+        installCount: sql`${apps.installCount} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(apps.id, appId));
   }
 }
 

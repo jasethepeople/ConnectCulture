@@ -11,6 +11,7 @@ import Profile from "@/pages/profile";
 import Files from "@/pages/files";
 import Messages from "@/pages/messages";
 import Customize from "@/pages/customize";
+import Apps from "@/pages/apps";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
           <Route path="/profile/:username?" component={Profile} />
           <Route path="/files" component={Files} />
           <Route path="/messages" component={Messages} />
+          <Route path="/apps" component={Apps} />
           <Route path="/customize" component={Customize} />
         </>
       )}

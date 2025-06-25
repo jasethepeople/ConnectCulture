@@ -128,6 +128,52 @@ export const profileViews = pgTable("profile_views", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Apps marketplace table
+export const apps = pgTable("apps", {
+  id: serial("id").primaryKey(),
+  name: varchar("name").notNull(),
+  slug: varchar("slug").unique().notNull(),
+  description: text("description").notNull(),
+  shortDescription: varchar("short_description").notNull(),
+  version: varchar("version").notNull(),
+  author: varchar("author").notNull(),
+  category: varchar("category").notNull(), // widgets, games, tools, social, music, etc
+  iconUrl: text("icon_url"),
+  screenshots: text("screenshots").array(),
+  manifestUrl: text("manifest_url").notNull(), // JSON config for the app
+  iframeUrl: text("iframe_url"), // For embeddable apps
+  isVerified: boolean("is_verified").default(false),
+  installCount: integer("install_count").default(0),
+  rating: integer("rating").default(0), // 1-5 stars
+  tags: text("tags").array(),
+  permissions: text("permissions").array(), // what the app can access
+  size: varchar("size"), // small, medium, large, fullscreen
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User installed apps
+export const userApps = pgTable("user_apps", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  appId: integer("app_id").references(() => apps.id).notNull(),
+  position: integer("position").default(0), // order on profile
+  settings: jsonb("settings").default('{}'), // app-specific settings
+  isVisible: boolean("is_visible").default(true),
+  installedAt: timestamp("installed_at").defaultNow(),
+});
+
+// App reviews
+export const appReviews = pgTable("app_reviews", {
+  id: serial("id").primaryKey(),
+  appId: integer("app_id").references(() => apps.id).notNull(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  rating: integer("rating").notNull(), // 1-5 stars
+  review: text("review"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   sentConnections: many(connections, { relationName: "requester" }),

@@ -133,6 +133,15 @@ The application follows a monorepo pattern with shared TypeScript types and sche
 - Added demo media posts showcasing different video platforms
 - Enhanced home page with media posting and viewing capabilities
 
+**June 25, 2025 - App Marketplace & Plugin System**
+- Built comprehensive app marketplace with 12+ demo apps (Spotify, YouTube, games, crypto trackers, tools)
+- Created app installation system with user management and permissions
+- Added AppWidget component for profile customization with live widgets
+- Implemented app categories, ratings, search, and install counts
+- Extended database with apps, user_apps, and app_reviews tables
+- Integrated marketplace into navigation and profile pages
+- Added demo apps: music players, weather widgets, games, social tools, crypto trackers
+
 ## User Preferences
 
 ```
