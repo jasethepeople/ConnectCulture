@@ -13,6 +13,7 @@ import Messages from "@/pages/messages";
 import Customize from "@/pages/customize";
 import Apps from "@/pages/apps";
 import Health from "@/pages/health";
+import Safety from "@/pages/safety";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -30,6 +31,7 @@ function Router() {
           <Route path="/messages" component={Messages} />
           <Route path="/apps" component={Apps} />
           <Route path="/health" component={Health} />
+          <Route path="/safety" component={Safety} />
           <Route path="/customize" component={Customize} />
         </>
       )}

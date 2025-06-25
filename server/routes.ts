@@ -445,5 +445,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Safety discussion routes
+  app.get('/api/safety-discussions', async (req, res) => {
+    try {
+      const discussions = await storage.getSafetyDiscussions();
+      res.json(discussions);
+    } catch (error) {
+      console.error("Error fetching safety discussions:", error);
+      res.status(500).json({ message: "Failed to fetch safety discussions" });
+    }
+  });
+
+  app.post('/api/safety-discussions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const discussionData = {
+        ...req.body,
+        authorId: userId,
+      };
+      const discussion = await storage.createSafetyDiscussion(discussionData);
+      res.json(discussion);
+    } catch (error) {
+      console.error("Error creating safety discussion:", error);
+      res.status(500).json({ message: "Failed to create safety discussion" });
+    }
+  });
+
   return httpServer;
 }

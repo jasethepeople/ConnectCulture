@@ -93,6 +93,10 @@ export interface IStorage {
   // Age verification operations
   verifyUserAge(userId: string, method: string, birthDate?: string): Promise<void>;
   toggleAdultContent(userId: string, enabled: boolean): Promise<void>;
+  
+  // Safety operations
+  getSafetyDiscussions(): Promise<any[]>;
+  createSafetyDiscussion(discussion: any): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -549,6 +553,26 @@ export class DatabaseStorage implements IStorage {
         updated_at = NOW()
       WHERE id = ${userId}
     `);
+  }
+
+  // Safety operations
+  async getSafetyDiscussions(): Promise<any[]> {
+    const result = await db.execute(sql`
+      SELECT sd.*, u.first_name, u.last_name, u.profile_image_url
+      FROM safety_discussions sd
+      LEFT JOIN users u ON sd.author_id = u.id
+      ORDER BY sd.created_at DESC
+    `);
+    return result.rows;
+  }
+
+  async createSafetyDiscussion(discussion: any): Promise<any> {
+    const result = await db.execute(sql`
+      INSERT INTO safety_discussions (author_id, title, content, category, content_warning)
+      VALUES (${discussion.authorId}, ${discussion.title || 'Safety Discussion'}, ${discussion.content}, ${discussion.category}, ${discussion.contentWarning || null})
+      RETURNING *
+    `);
+    return result.rows[0];
   }
 }
 

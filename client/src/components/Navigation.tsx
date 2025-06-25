@@ -23,7 +23,8 @@ import {
   Menu,
   Plus,
   Store,
-  Heart
+  Heart,
+  Shield
 } from "lucide-react";
 
 export function Navigation() {
@@ -38,6 +39,7 @@ export function Navigation() {
     { path: "/messages", label: "Messages", icon: MessageSquare },
     { path: "/apps", label: "Apps", icon: Store },
     { path: "/health", label: "Health", icon: Heart },
+    { path: "/safety", label: "Safety", icon: Shield },
     { path: "/customize", label: "Customize", icon: Palette },
   ];
 
