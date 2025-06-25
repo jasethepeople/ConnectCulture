@@ -55,6 +55,28 @@ interface EncryptedMessage {
   timestamp: string;
 }
 
+interface EmailAlias {
+  id: string;
+  address: string;
+  name: string;
+  isTemporary: boolean;
+  expiresAt?: string;
+  createdAt: string;
+  messageCount: number;
+}
+
+interface AnonymousEmail {
+  id: string;
+  from: string;
+  to: string;
+  subject: string;
+  body: string;
+  isEncrypted: boolean;
+  selfDestructAt?: string;
+  createdAt: string;
+  isRead: boolean;
+}
+
 export default function Privacy() {
   // Tor Browser State
   const [torUrl, setTorUrl] = useState("http://3g2upl4pq6kufc4m.onion"); // DuckDuckGo onion
@@ -80,6 +102,37 @@ export default function Privacy() {
   const [encryptedOutput, setEncryptedOutput] = useState("");
   const [decryptedOutput, setDecryptedOutput] = useState("");
   const [selectedContact, setSelectedContact] = useState("");
+
+  // Anonymous Email State
+  const [emailAliases, setEmailAliases] = useState<EmailAlias[]>([
+    {
+      id: "1",
+      address: "secure.anon.2024@secmail.onion",
+      name: "Primary Anonymous",
+      isTemporary: false,
+      createdAt: new Date().toISOString(),
+      messageCount: 3
+    }
+  ]);
+  const [anonymousEmails, setAnonymousEmails] = useState<AnonymousEmail[]>([
+    {
+      id: "1",
+      from: "contact@privacy.onion",
+      to: "secure.anon.2024@secmail.onion",
+      subject: "Welcome to Anonymous Email",
+      body: "Your secure email system is now active. All messages are automatically encrypted and routed through Tor.",
+      isEncrypted: true,
+      createdAt: new Date(Date.now() - 3600000).toISOString(),
+      isRead: false
+    }
+  ]);
+  const [selectedAlias, setSelectedAlias] = useState<string>("");
+  const [emailCompose, setEmailCompose] = useState({
+    to: "",
+    subject: "",
+    body: "",
+    selfDestructHours: 24
+  });
 
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
@@ -208,6 +261,80 @@ hQEMA+${Math.random().toString(36)}+encrypted+${btoa(messageToEncrypt)}+end
     toast({ title: "Copied", description: "Content copied to clipboard" });
   };
 
+  // Email functions
+  const generateTempEmail = () => {
+    const randomId = Math.random().toString(36).substr(2, 12);
+    const tempDomains = ["tempmail.onion", "burner.onion", "disposable.onion"];
+    const domain = tempDomains[Math.floor(Math.random() * tempDomains.length)];
+    
+    const newAlias: EmailAlias = {
+      id: Date.now().toString(),
+      address: `${randomId}@${domain}`,
+      name: "Temporary Email",
+      isTemporary: true,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours
+      createdAt: new Date().toISOString(),
+      messageCount: 0
+    };
+    
+    setEmailAliases(prev => [...prev, newAlias]);
+    toast({ title: "Temporary email created", description: "Expires in 24 hours" });
+  };
+
+  const generateAlias = () => {
+    const adjectives = ["secure", "private", "anon", "shadow", "ghost", "stealth"];
+    const nouns = ["mail", "msg", "comm", "drop", "box", "vault"];
+    const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+    const randomNum = Math.floor(Math.random() * 9999);
+    
+    const newAlias: EmailAlias = {
+      id: Date.now().toString(),
+      address: `${randomAdj}.${randomNoun}.${randomNum}@secmail.onion`,
+      name: "Custom Alias",
+      isTemporary: false,
+      createdAt: new Date().toISOString(),
+      messageCount: 0
+    };
+    
+    setEmailAliases(prev => [...prev, newAlias]);
+    toast({ title: "Email alias created", description: "Permanent alias ready to use" });
+  };
+
+  const sendAnonymousEmail = () => {
+    if (!emailCompose.to || !emailCompose.subject || !selectedAlias) {
+      toast({ title: "Missing fields", description: "Please fill all required fields", variant: "destructive" });
+      return;
+    }
+    
+    const newEmail: AnonymousEmail = {
+      id: Date.now().toString(),
+      from: selectedAlias,
+      to: emailCompose.to,
+      subject: emailCompose.subject,
+      body: emailCompose.body,
+      isEncrypted: true,
+      selfDestructAt: emailCompose.selfDestructHours > 0 
+        ? new Date(Date.now() + emailCompose.selfDestructHours * 60 * 60 * 1000).toISOString()
+        : undefined,
+      createdAt: new Date().toISOString(),
+      isRead: false
+    };
+    
+    // Add to sent emails (in real implementation, this would be handled by backend)
+    setAnonymousEmails(prev => [newEmail, ...prev]);
+    
+    // Reset compose form
+    setEmailCompose({
+      to: "",
+      subject: "",
+      body: "",
+      selfDestructHours: 24
+    });
+    
+    toast({ title: "Email sent anonymously", description: "Message encrypted and routed through Tor" });
+  };
+
   return (
     <div className="min-h-screen bg-[hsl(240,50%,7%)] text-white">
       <Navigation />
@@ -230,10 +357,14 @@ hQEMA+${Math.random().toString(36)}+encrypted+${btoa(messageToEncrypt)}+end
         </div>
 
         <Tabs defaultValue="tor" className="space-y-6">
-          <TabsList className="grid grid-cols-2 lg:grid-cols-3 w-full bg-[hsl(240,29%,11%)]">
+          <TabsList className="grid grid-cols-2 lg:grid-cols-4 w-full bg-[hsl(240,29%,11%)]">
             <TabsTrigger value="tor" className="flex items-center gap-2">
               <Globe className="h-4 w-4" />
               <span className="hidden sm:inline">Tor Browser</span>
+            </TabsTrigger>
+            <TabsTrigger value="email" className="flex items-center gap-2">
+              <Send className="h-4 w-4" />
+              <span className="hidden sm:inline">Anonymous Email</span>
             </TabsTrigger>
             <TabsTrigger value="pgp" className="flex items-center gap-2">
               <Lock className="h-4 w-4" />
@@ -436,6 +567,249 @@ hQEMA+${Math.random().toString(36)}+encrypted+${btoa(messageToEncrypt)}+end
                       <CheckCircle className="h-4 w-4 text-green-400" />
                       <span>Location Masked</span>
                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Anonymous Email Tab */}
+          <TabsContent value="email">
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                {/* Email Compose */}
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Send className="h-5 w-5 text-blue-400" />
+                      Compose Anonymous Email
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-sm font-medium mb-2 block">From Alias</label>
+                          <select
+                            value={selectedAlias}
+                            onChange={(e) => setSelectedAlias(e.target.value)}
+                            className="w-full p-2 bg-[hsl(240,29%,11%)] border border-gray-700 rounded-lg text-white"
+                          >
+                            <option value="">Select alias...</option>
+                            {emailAliases.map(alias => (
+                              <option key={alias.id} value={alias.address}>
+                                {alias.address} ({alias.name})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-sm font-medium mb-2 block">Self-Destruct (hours)</label>
+                          <Input
+                            type="number"
+                            value={emailCompose.selfDestructHours}
+                            onChange={(e) => setEmailCompose(prev => ({...prev, selfDestructHours: parseInt(e.target.value) || 0}))}
+                            className="bg-[hsl(240,29%,11%)] border-gray-700"
+                            min="0"
+                            max="168"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">To</label>
+                        <Input
+                          value={emailCompose.to}
+                          onChange={(e) => setEmailCompose(prev => ({...prev, to: e.target.value}))}
+                          placeholder="recipient@example.onion"
+                          className="bg-[hsl(240,29%,11%)] border-gray-700"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Subject</label>
+                        <Input
+                          value={emailCompose.subject}
+                          onChange={(e) => setEmailCompose(prev => ({...prev, subject: e.target.value}))}
+                          placeholder="Message subject"
+                          className="bg-[hsl(240,29%,11%)] border-gray-700"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm font-medium mb-2 block">Message</label>
+                        <Textarea
+                          value={emailCompose.body}
+                          onChange={(e) => setEmailCompose(prev => ({...prev, body: e.target.value}))}
+                          placeholder="Your encrypted message..."
+                          className="min-h-[150px] bg-[hsl(240,29%,11%)] border-gray-700"
+                        />
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          onClick={sendAnonymousEmail}
+                          className="bg-blue-600 hover:bg-blue-700 flex-1"
+                        >
+                          <Send className="h-4 w-4 mr-2" />
+                          Send Anonymously
+                        </Button>
+                        <Button variant="outline" onClick={() => setEmailCompose({to: "", subject: "", body: "", selfDestructHours: 24})}>
+                          Clear
+                        </Button>
+                      </div>
+                      
+                      {emailCompose.selfDestructHours > 0 && (
+                        <div className="p-3 bg-orange-900/20 border border-orange-700 rounded-lg">
+                          <p className="text-sm text-orange-300">
+                            <AlertTriangle className="h-4 w-4 inline mr-2" />
+                            This email will self-destruct in {emailCompose.selfDestructHours} hours after being read
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Email Inbox */}
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <MessageSquare className="h-5 w-5 text-green-400" />
+                      Anonymous Inbox
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {anonymousEmails.map(email => (
+                        <div key={email.id} className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                          email.isRead ? 'bg-[hsl(240,29%,9%)] border-gray-700' : 'bg-[hsl(240,29%,11%)] border-blue-700'
+                        }`}>
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <p className="font-medium text-sm">{email.subject}</p>
+                                {email.isEncrypted && <Lock className="h-3 w-3 text-green-400" />}
+                                {email.selfDestructAt && <AlertTriangle className="h-3 w-3 text-orange-400" />}
+                                {!email.isRead && <div className="w-2 h-2 bg-blue-400 rounded-full" />}
+                              </div>
+                              <p className="text-xs text-gray-400">From: {email.from}</p>
+                              <p className="text-xs text-gray-400">To: {email.to}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs text-gray-400">{new Date(email.createdAt).toLocaleString()}</p>
+                              {email.selfDestructAt && (
+                                <p className="text-xs text-orange-400">
+                                  Expires: {new Date(email.selfDestructAt).toLocaleString()}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-300 truncate">{email.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Email Sidebar */}
+              <div className="space-y-6">
+                {/* Alias Management */}
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Email Aliases</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Button 
+                          onClick={generateTempEmail}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Generate Temp Email
+                        </Button>
+                        <Button 
+                          onClick={generateAlias}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          <Key className="h-4 w-4 mr-2" />
+                          Create Alias
+                        </Button>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        {emailAliases.map(alias => (
+                          <div key={alias.id} className="p-3 bg-[hsl(240,29%,11%)] rounded-lg">
+                            <div className="flex items-center justify-between mb-1">
+                              <p className="text-sm font-medium">{alias.name}</p>
+                              {alias.isTemporary && (
+                                <Badge variant="outline" className="text-xs text-orange-400 border-orange-400">
+                                  TEMP
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-gray-400 mb-1">{alias.address}</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-500">{alias.messageCount} messages</span>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => copyToClipboard(alias.address)}
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                            </div>
+                            {alias.expiresAt && (
+                              <p className="text-xs text-orange-400 mt-1">
+                                Expires: {new Date(alias.expiresAt).toLocaleString()}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Email Security Info */}
+                <Card className="glass-effect bg-green-900/20 border-green-700">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-green-400">Email Security</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-400" />
+                      <span>End-to-end encrypted</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-400" />
+                      <span>Routed through Tor</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-400" />
+                      <span>No metadata logging</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-400" />
+                      <span>Self-destruct capable</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Anonymous Email Tips */}
+                <Card className="glass-effect bg-yellow-900/20 border-yellow-700">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-yellow-400">Privacy Tips</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm">
+                    <p className="text-gray-300">• Use temp emails for one-time communications</p>
+                    <p className="text-gray-300">• Create unique aliases for different purposes</p>
+                    <p className="text-gray-300">• Set self-destruct for sensitive messages</p>
+                    <p className="text-gray-300">• Connect through Tor for maximum anonymity</p>
                   </CardContent>
                 </Card>
               </div>

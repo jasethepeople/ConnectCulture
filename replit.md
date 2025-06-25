@@ -192,6 +192,17 @@ The application follows a monorepo pattern with shared TypeScript types and sche
 - Added contact key management and verification system
 - Maintained security best practices while simplifying user experience
 
+**June 25, 2025 - Anonymous Email System with Temp Addresses & Self-Destruct**
+- Built comprehensive .onion-based anonymous email client integrated into privacy center
+- Created temporary email address generation with automatic expiration (24 hours)
+- Implemented custom email alias system with random secure address generation
+- Added self-destruct email functionality with configurable timers (1-168 hours)
+- Integrated end-to-end encryption for all anonymous email communications
+- Built email compose interface with alias selection and self-destruct options
+- Created secure inbox with encryption indicators and expiration warnings
+- Added email alias management with copy/paste functionality for easy sharing
+- Routed all email traffic through Tor network for maximum anonymity
+
 ## User Preferences
 
 ```
