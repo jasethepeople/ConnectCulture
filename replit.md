@@ -171,13 +171,15 @@ The application follows a monorepo pattern with shared TypeScript types and sche
 
 **June 25, 2025 - Human Trafficking Safety & Awareness Hub**
 - Created comprehensive human trafficking awareness and education platform
-- Integrated educational content from verified sources (Conspiracy Files, Rotten Mango 2, Rumble channels)
-- Added global impact statistics and warning signs recognition guides
-- Built emergency contact directory with 24/7 hotlines and crisis resources
+- Integrated educational content from user's dedicated Rumble channels (Shatterlight, killchildtraffikers)
+- Added content from independent creators (Conspiracy Files, Rotten Mango 2)
+- Built global impact statistics and warning signs recognition guides
+- Created emergency contact directory with 24/7 hotlines and crisis resources
 - Included protection strategies and community safety protocols
-- Featured video content from independent creators focused on awareness
+- Featured video content from citizen journalists and independent researchers
 - Added discussion forums for sharing educational content and safety tips
 - Maintained sensitive content warnings while preserving educational value
+- Emphasized independent sources avoiding mainstream media bias
 
 ## User Preferences
 

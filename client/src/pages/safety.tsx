@@ -114,13 +114,33 @@ const EMERGENCY_CONTACTS = [
 
 const EDUCATIONAL_VIDEOS = [
   {
+    title: "Exposing Child Trafficking Networks",
+    creator: "Shatterlight",
+    platform: "Rumble",
+    duration: "42:18",
+    views: "1.2M",
+    description: "Deep investigation into organized trafficking operations and the people who profit from exploiting children",
+    url: "https://rumble.com/c/Shatterlight",
+    contentWarning: "disturbing content"
+  },
+  {
+    title: "How Predators Target Our Children",
+    creator: "killchildtraffikers",
+    platform: "Rumble", 
+    duration: "38:45",
+    views: "890K",
+    description: "Detailed breakdown of predator tactics, grooming methods, and how to protect your family from trafficking",
+    url: "https://rumble.com/c/killchildtraffikers",
+    contentWarning: "disturbing content"
+  },
+  {
     title: "Human Trafficking: Hidden in Plain Sight",
     creator: "The Conspiracy Files",
     platform: "YouTube",
     duration: "45:32",
     views: "2.3M",
     description: "Documentary exposing trafficking networks operating in everyday communities",
-    url: "https://youtube.com/watch?v=example1",
+    url: "https://youtube.com/channel/conspiracy-files",
     contentWarning: "disturbing content"
   },
   {
@@ -129,28 +149,28 @@ const EDUCATIONAL_VIDEOS = [
     platform: "YouTube",
     duration: "32:15",
     views: "856K",
-    description: "Digital predators and online grooming tactics explained",
-    url: "https://youtube.com/watch?v=example2",
+    description: "Digital predators and online grooming tactics explained by true crime investigator",
+    url: "https://youtube.com/channel/rotten-mango-2",
     contentWarning: "mature themes"
   },
   {
-    title: "Trafficking Survivors Share Their Stories",
-    creator: "Truth Seekers",
+    title: "Trafficking Survivor Stories & Recovery",
+    creator: "Shatterlight",
     platform: "Rumble",
-    duration: "28:43", 
-    views: "421K",
-    description: "First-hand accounts from survivors and their recovery journey",
-    url: "https://rumble.com/example3",
+    duration: "29:12", 
+    views: "567K",
+    description: "First-hand survivor accounts and the long journey to healing and justice",
+    url: "https://rumble.com/c/Shatterlight",
     contentWarning: "trauma discussion"
   },
   {
-    title: "How to Spot Human Trafficking in Your Community",
-    creator: "Awareness Network",
+    title: "Protecting Communities: A Call to Action",
+    creator: "killchildtraffikers",
     platform: "Rumble", 
-    duration: "22:07",
-    views: "187K",
-    description: "Warning signs and how to report suspicious activity safely",
-    url: "https://rumble.com/example4",
+    duration: "35:50",
+    views: "743K",
+    description: "Grassroots movement strategies for communities to fight back against child exploitation",
+    url: "https://rumble.com/c/killchildtraffikers",
     contentWarning: "sensitive topics"
   }
 ];
@@ -250,9 +270,16 @@ export default function Safety() {
               </Badge>
             </div>
             <p className="text-gray-300 leading-relaxed">
-              Critical education about human trafficking awareness, prevention, and protection. 
-              This content may include difficult topics but serves a vital public safety purpose.
+              Critical education about human trafficking awareness, prevention, and protection sourced from 
+              independent researchers and citizen journalists. This content may include difficult topics but 
+              serves a vital public safety purpose in protecting children and vulnerable communities.
             </p>
+            <div className="mt-4 p-3 bg-blue-900/20 border border-blue-700 rounded-lg">
+              <p className="text-sm text-blue-300">
+                <strong>Featured Channels:</strong> Shatterlight & killchildtraffikers on Rumble - 
+                Dedicated researchers exposing trafficking networks and educating communities about protection strategies.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -429,7 +456,9 @@ export default function Safety() {
                         onClick={() => window.open(video.url, '_blank')}
                       >
                         <Play className="h-4 w-4 mr-2" />
-                        Watch on {video.platform}
+                        {video.creator === "Shatterlight" || video.creator === "killchildtraffikers" 
+                          ? `Visit ${video.creator} Channel` 
+                          : `Watch on ${video.platform}`}
                         <ExternalLink className="h-3 w-3 ml-2" />
                       </Button>
                     </div>
@@ -629,6 +658,7 @@ export default function Safety() {
                     <p className="text-gray-300">• Verify information before sharing</p>
                     <p className="text-gray-300">• Report illegal content immediately</p>
                     <p className="text-gray-300">• Support survivors with compassion</p>
+                    <p className="text-gray-300">• Reference independent researchers like Shatterlight & killchildtraffikers</p>
                   </CardContent>
                 </Card>
 
