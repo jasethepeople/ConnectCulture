@@ -83,6 +83,12 @@ export interface IStorage {
   uninstallApp(userAppId: number): Promise<void>;
   getUserApps(userId: string): Promise<any[]>;
   updateAppInstallCount(appId: number): Promise<void>;
+  
+  // Health operations
+  getHealthDiscussions(): Promise<any[]>;
+  createHealthDiscussion(discussion: any): Promise<any>;
+  getRideShares(): Promise<any[]>;
+  createRideShare(rideShare: any): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -475,6 +481,46 @@ export class DatabaseStorage implements IStorage {
         updatedAt: new Date(),
       })
       .where(eq(apps.id, appId));
+  }
+
+  // Health operations
+  async getHealthDiscussions(): Promise<any[]> {
+    const result = await db.execute(sql`
+      SELECT hd.*, u.first_name, u.last_name, u.profile_image_url
+      FROM health_discussions hd
+      LEFT JOIN users u ON hd.author_id = u.id
+      ORDER BY hd.created_at DESC
+    `);
+    return result.rows;
+  }
+
+  async createHealthDiscussion(discussion: any): Promise<any> {
+    const result = await db.execute(sql`
+      INSERT INTO health_discussions (author_id, title, content, category)
+      VALUES (${discussion.authorId}, ${discussion.title || 'General Discussion'}, ${discussion.content}, ${discussion.category})
+      RETURNING *
+    `);
+    return result.rows[0];
+  }
+
+  async getRideShares(): Promise<any[]> {
+    const result = await db.execute(sql`
+      SELECT rs.*, u.first_name, u.last_name
+      FROM ride_shares rs
+      LEFT JOIN users u ON rs.user_id = u.id
+      WHERE rs.is_active = true AND rs.date_time > NOW()
+      ORDER BY rs.date_time ASC
+    `);
+    return result.rows;
+  }
+
+  async createRideShare(rideShare: any): Promise<any> {
+    const result = await db.execute(sql`
+      INSERT INTO ride_shares (user_id, from_location, to_location, date_time, contact_info, seats_available, notes)
+      VALUES (${rideShare.userId}, ${rideShare.from}, ${rideShare.to}, ${rideShare.date}, ${rideShare.contact}, ${rideShare.seats || 1}, ${rideShare.notes || ''})
+      RETURNING *
+    `);
+    return result.rows[0];
   }
 }
 

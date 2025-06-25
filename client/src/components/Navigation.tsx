@@ -22,7 +22,8 @@ import {
   LogOut,
   Menu,
   Plus,
-  Store
+  Store,
+  Heart
 } from "lucide-react";
 
 export function Navigation() {
@@ -36,6 +37,7 @@ export function Navigation() {
     { path: "/files", label: "Files", icon: FileText },
     { path: "/messages", label: "Messages", icon: MessageSquare },
     { path: "/apps", label: "Apps", icon: Store },
+    { path: "/health", label: "Health", icon: Heart },
     { path: "/customize", label: "Customize", icon: Palette },
   ];
 
