@@ -201,6 +201,30 @@ export default function Civic() {
     });
   };
 
+  const findAAMeetings = () => {
+    // In real implementation, this would use AA's meeting finder API
+    toast({ 
+      title: "AA Meeting Finder", 
+      description: "Visit aa.org or call your local AA hotline for meeting schedules" 
+    });
+  };
+
+  const findFaithCommunity = (faithType: string) => {
+    const faithResources = {
+      "Christian": "Visit churchfinder.com or contact your local denominational office",
+      "Islamic": "Visit islamicfinder.org for mosque locations and prayer times",
+      "Jewish": "Contact your local Jewish federation or visit urj.org",
+      "Buddhist": "Search for local meditation centers and Buddhist temples",
+      "Hindu": "Find Hindu temples and cultural centers in your area",
+      "LDS": "Use the LDS meetinghouse locator at churchofjesuschrist.org"
+    };
+    
+    toast({ 
+      title: `${faithType} Communities`, 
+      description: faithResources[faithType as keyof typeof faithResources] || "Contact local faith directories"
+    });
+  };
+
   return (
     <div className="min-h-screen bg-[hsl(240,50%,7%)] text-white">
       <Navigation />
@@ -410,41 +434,39 @@ export default function Civic() {
 
           {/* Local Resources Tab */}
           <TabsContent value="resources">
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* 211 Resources */}
               <Card className="glass-effect bg-transparent border-white/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Phone className="h-5 w-5 text-blue-400" />
-                    211 - Community Resources Helpline
+                    211 - Community Resources
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="text-center p-6 bg-blue-900/20 border border-blue-700 rounded-lg">
-                      <Phone className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-                      <h3 className="text-2xl font-bold text-blue-400 mb-2">Dial 2-1-1</h3>
-                      <p className="text-gray-300 mb-4">Free, confidential helpline available 24/7</p>
-                      <Button onClick={get211Resources} className="bg-blue-600 hover:bg-blue-700">
-                        Find Local Resources
+                    <div className="text-center p-4 bg-blue-900/20 border border-blue-700 rounded-lg">
+                      <Phone className="h-8 w-8 text-blue-400 mx-auto mb-2" />
+                      <h3 className="text-xl font-bold text-blue-400 mb-2">Dial 2-1-1</h3>
+                      <p className="text-gray-300 text-sm mb-3">Free, confidential helpline 24/7</p>
+                      <Button onClick={get211Resources} size="sm" className="bg-blue-600 hover:bg-blue-700">
+                        Find Resources
                       </Button>
                     </div>
                     
-                    <div className="space-y-3">
-                      <h4 className="font-semibold text-white">Available Resources:</h4>
-                      <div className="grid gap-2">
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-white text-sm">Basic Needs:</h4>
+                      <div className="grid gap-1">
                         {[
-                          "Food assistance and food banks",
-                          "Housing and rental assistance", 
-                          "Healthcare and medical clinics",
-                          "Employment and job training",
-                          "Mental health services",
-                          "Senior citizen programs",
-                          "Child care and family support",
+                          "Food assistance & food banks",
+                          "Housing & rental assistance", 
+                          "Healthcare & medical clinics",
+                          "Employment & job training",
                           "Utility assistance programs"
                         ].map((resource, index) => (
-                          <div key={index} className="flex items-center gap-2 p-2 bg-[hsl(240,29%,11%)] rounded-lg">
-                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                            <span className="text-sm text-gray-300">{resource}</span>
+                          <div key={index} className="flex items-center gap-2 p-2 bg-[hsl(240,29%,11%)] rounded text-xs">
+                            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
+                            <span className="text-gray-300">{resource}</span>
                           </div>
                         ))}
                       </div>
@@ -453,41 +475,143 @@ export default function Civic() {
                 </CardContent>
               </Card>
 
+              {/* Support Groups */}
               <Card className="glass-effect bg-transparent border-white/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-green-400" />
-                    Regional Resource Finder
+                    <Users className="h-5 w-5 text-green-400" />
+                    Support Groups
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <Input
-                      placeholder="Enter your ZIP code"
-                      className="bg-[hsl(240,29%,11%)] border-gray-700"
-                    />
-                    <Button className="w-full bg-green-600 hover:bg-green-700">
-                      <Search className="h-4 w-4 mr-2" />
-                      Find Resources Near Me
-                    </Button>
+                    <div className="p-3 bg-green-900/20 border border-green-700 rounded-lg">
+                      <h4 className="font-semibold text-green-400 mb-2 text-sm">Alcoholics Anonymous</h4>
+                      <p className="text-xs text-gray-300 mb-2">Local AA meetings and support</p>
+                      <Button size="sm" variant="outline" className="w-full text-xs">
+                        <Search className="h-3 w-3 mr-1" />
+                        Find AA Meetings
+                      </Button>
+                    </div>
                     
-                    <div className="p-4 bg-yellow-900/20 border border-yellow-700 rounded-lg">
-                      <h4 className="font-semibold text-yellow-400 mb-2">Popular Resources</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-300">Food Banks</span>
-                          <span className="text-yellow-400">15 nearby</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-300">Health Clinics</span>
-                          <span className="text-yellow-400">8 nearby</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-300">Job Centers</span>
-                          <span className="text-yellow-400">5 nearby</span>
-                        </div>
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-white text-sm">Other Support Groups:</h4>
+                      <div className="grid gap-1">
+                        {[
+                          "Narcotics Anonymous (NA)",
+                          "Al-Anon (families of alcoholics)",
+                          "Gamblers Anonymous",
+                          "Overeaters Anonymous",
+                          "SMART Recovery",
+                          "Celebrate Recovery",
+                          "Grief support groups",
+                          "PTSD support groups"
+                        ].map((group, index) => (
+                          <div key={index} className="flex items-center gap-2 p-2 bg-[hsl(240,29%,11%)] rounded text-xs">
+                            <Heart className="h-3 w-3 text-red-400" />
+                            <span className="text-gray-300">{group}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Religious Organizations */}
+              <Card className="glass-effect bg-transparent border-white/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Star className="h-5 w-5 text-yellow-400" />
+                    Faith Communities
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="space-y-3">
+                      {[
+                        { name: "Christian Churches", icon: "✝️", contact: "Local church directories" },
+                        { name: "Islamic Centers", icon: "☪️", contact: "ISNA mosque finder" },
+                        { name: "Jewish Synagogues", icon: "✡️", contact: "URJ congregation finder" },
+                        { name: "Buddhist Temples", icon: "☸️", contact: "Buddhist temple directory" },
+                        { name: "Hindu Temples", icon: "🕉️", contact: "Local Hindu centers" },
+                        { name: "Latter-day Saints", icon: "🏛️", contact: "LDS meetinghouse locator" }
+                      ].map((faith, index) => (
+                        <div key={index} className="p-3 bg-[hsl(240,29%,11%)] rounded-lg">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm">{faith.icon}</span>
+                            <h5 className="font-medium text-white text-sm">{faith.name}</h5>
+                          </div>
+                          <p className="text-xs text-gray-400">{faith.contact}</p>
+                          <Button size="sm" variant="ghost" className="mt-2 text-xs">
+                            <MapPin className="h-3 w-3 mr-1" />
+                            Find Nearby
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Additional Resource Categories */}
+            <div className="grid lg:grid-cols-2 gap-6 mt-6">
+              <Card className="glass-effect bg-transparent border-white/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-purple-400" />
+                    Crisis Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-3">
+                    <div className="p-3 bg-red-900/20 border border-red-700 rounded-lg">
+                      <h5 className="font-semibold text-red-400 mb-1">National Suicide Prevention</h5>
+                      <p className="text-lg font-bold text-red-300">988</p>
+                      <p className="text-xs text-gray-400">24/7 crisis chat and phone support</p>
+                    </div>
+                    
+                    <div className="p-3 bg-blue-900/20 border border-blue-700 rounded-lg">
+                      <h5 className="font-semibold text-blue-400 mb-1">Crisis Text Line</h5>
+                      <p className="text-sm font-bold text-blue-300">Text HOME to 741741</p>
+                      <p className="text-xs text-gray-400">Free 24/7 crisis support via text</p>
+                    </div>
+                    
+                    <div className="p-3 bg-purple-900/20 border border-purple-700 rounded-lg">
+                      <h5 className="font-semibold text-purple-400 mb-1">SAMHSA Helpline</h5>
+                      <p className="text-sm font-bold text-purple-300">1-800-662-4357</p>
+                      <p className="text-xs text-gray-400">Substance abuse & mental health</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-effect bg-transparent border-white/20">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-pink-400" />
+                    Specialized Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {[
+                      { name: "Veterans Crisis Line", contact: "1-800-273-8255", desc: "24/7 support for veterans" },
+                      { name: "Domestic Violence Hotline", contact: "1-800-799-7233", desc: "National domestic violence support" },
+                      { name: "RAINN Sexual Assault", contact: "1-800-656-4673", desc: "Sexual assault hotline" },
+                      { name: "Trans Lifeline", contact: "877-565-8860", desc: "Support for transgender individuals" },
+                      { name: "PFLAG", contact: "pflag.org", desc: "Support for LGBTQ+ families" },
+                      { name: "NAMI", contact: "nami.org", desc: "Mental health advocacy & support" }
+                    ].map((resource, index) => (
+                      <div key={index} className="p-2 bg-[hsl(240,29%,11%)] rounded-lg">
+                        <div className="flex justify-between items-start mb-1">
+                          <h6 className="font-medium text-white text-sm">{resource.name}</h6>
+                          <span className="text-xs text-pink-400 font-mono">{resource.contact}</span>
+                        </div>
+                        <p className="text-xs text-gray-400">{resource.desc}</p>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>

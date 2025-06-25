@@ -213,6 +213,10 @@ The application follows a monorepo pattern with shared TypeScript types and sche
 - Built community guidelines focused on integrity, honesty, and finding common ground
 - Added local resource finder for food, housing, healthcare, employment assistance
 - Created civic guide promoting unity through understanding and shared values
+- Expanded with comprehensive support group directory including AA meetings and recovery programs
+- Added faith community finder covering Christian, Islamic, Jewish, Buddhist, Hindu, and LDS organizations
+- Integrated crisis support resources (988, Crisis Text Line, SAMHSA) with specialized helplines
+- Built specialized support section for veterans, domestic violence, LGBTQ+, and mental health resources
 
 ## User Preferences
 
