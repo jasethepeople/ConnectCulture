@@ -73,6 +73,40 @@ const HEALTH_RESOURCES = [
     url: "https://www.icandecide.org",
     category: "Vaccine Safety",
     location: "Nationwide"
+  },
+  {
+    title: "Project CBD",
+    description: "Cannabis science and education for health professionals",
+    url: "https://www.projectcbd.org",
+    category: "Cannabis Medicine",
+    location: "California"
+  },
+  {
+    title: "Multidisciplinary Association for Psychedelic Studies",
+    description: "MAPS - Research on therapeutic benefits of psychedelics",
+    url: "https://maps.org",
+    category: "Psychedelic Research",
+    location: "Santa Cruz, CA"
+  },
+  {
+    title: "Johns Hopkins Center for Psychedelic Research",
+    description: "Leading psilocybin research for depression and PTSD",
+    url: "https://hopkinspsychedelic.org",
+    category: "Psychedelic Research",
+    location: "Baltimore, MD"
+  },
+  {
+    title: "Realm of Caring Foundation",
+    description: "Cannabis education and patient support network",
+    url: "https://www.realmofcaring.org",
+    category: "Cannabis Medicine",
+    location: "Colorado"
+  },
+  {
+    title: "Sacred Plant Medicine Alliance",
+    description: "Education on traditional plant medicines and safety",
+    category: "Plant Medicine",
+    location: "Nationwide"
   }
 ];
 
@@ -191,7 +225,7 @@ export default function Health() {
         </div>
 
         <Tabs defaultValue="discussions" className="space-y-6">
-          <TabsList className="grid grid-cols-2 lg:grid-cols-5 w-full bg-[hsl(240,29%,11%)]">
+          <TabsList className="grid grid-cols-2 lg:grid-cols-6 w-full bg-[hsl(240,29%,11%)]">
             <TabsTrigger value="discussions" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               <span className="hidden sm:inline">Discussions</span>
@@ -207,6 +241,10 @@ export default function Health() {
             <TabsTrigger value="scanner" className="flex items-center gap-2">
               <Radio className="h-4 w-4" />
               <span className="hidden sm:inline">Emergency Scanner</span>
+            </TabsTrigger>
+            <TabsTrigger value="cannabis" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              <span className="hidden sm:inline">Cannabis & Plant Medicine</span>
             </TabsTrigger>
             <TabsTrigger value="rideshare" className="flex items-center gap-2">
               <Car className="h-4 w-4" />
@@ -281,6 +319,22 @@ export default function Health() {
                       time: "2 days ago",
                       excerpt: "FLCCC protocols, natural immunity boosters, and treatments that actually work. Censored information from frontline doctors...",
                       category: "COVID Treatment"
+                    },
+                    {
+                      title: "Cannabis for Chronic Pain - My 5 Year Journey",
+                      author: "PlantMedicine",
+                      replies: 78,
+                      time: "1 day ago",
+                      excerpt: "How I replaced opioids with CBD/THC therapy. Strain recommendations, dosing protocols, and dealing with legal challenges...",
+                      category: "Cannabis Medicine"
+                    },
+                    {
+                      title: "Psilocybin Therapy for Depression - Clinical Results",
+                      author: "MushroomHealer",
+                      replies: 134,
+                      time: "3 days ago",
+                      excerpt: "Johns Hopkins research results, microdosing protocols, set and setting guidelines. Real healing without Big Pharma...",
+                      category: "Psychedelic Research"
                     }
                   ].map((discussion, index) => (
                     <Card key={index} className="glass-effect bg-transparent border-white/20 hover:border-[hsl(151,100%,50%)]/50 transition-colors cursor-pointer">
@@ -349,6 +403,14 @@ export default function Health() {
                     <div className="flex justify-between">
                       <span>Detox Protocols</span>
                       <Badge variant="outline">98 posts</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Cannabis Medicine</span>
+                      <Badge variant="outline">87 posts</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Psilocybin Research</span>
+                      <Badge variant="outline">72 posts</Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -567,6 +629,239 @@ export default function Health() {
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          </TabsContent>
+
+          {/* Cannabis & Plant Medicine */}
+          <TabsContent value="cannabis">
+            <div className="grid lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                {/* Cannabis Education Section */}
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="h-5 w-5 text-green-400" />
+                      Cannabis Medicine Benefits
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-[hsl(240,29%,11%)] rounded-lg">
+                        <h4 className="font-semibold text-green-400 mb-2 flex items-center gap-2">
+                          <Heart className="h-4 w-4" />
+                          Medical Conditions
+                        </h4>
+                        <ul className="text-sm space-y-1 text-gray-300">
+                          <li>• Chronic pain management</li>
+                          <li>• Epilepsy and seizure disorders</li>
+                          <li>• Cancer treatment side effects</li>
+                          <li>• PTSD and anxiety disorders</li>
+                          <li>• Inflammatory conditions</li>
+                          <li>• Glaucoma and eye pressure</li>
+                          <li>• Appetite and nausea issues</li>
+                        </ul>
+                      </div>
+                      <div className="p-4 bg-[hsl(240,29%,11%)] rounded-lg">
+                        <h4 className="font-semibold text-blue-400 mb-2 flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Responsible Use Guidelines
+                        </h4>
+                        <ul className="text-sm space-y-1 text-gray-300">
+                          <li>• Start low, go slow with dosing</li>
+                          <li>• Consult healthcare providers</li>
+                          <li>• Choose quality, tested products</li>
+                          <li>• Understand strain differences</li>
+                          <li>• Monitor your response</li>
+                          <li>• Avoid driving while medicated</li>
+                          <li>• Keep away from children/pets</li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 bg-green-900/20 border border-green-700 rounded-lg">
+                      <h4 className="font-semibold text-green-400 mb-2">CBD vs THC: Understanding the Difference</h4>
+                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="font-medium text-green-300 mb-1">CBD (Cannabidiol)</p>
+                          <p className="text-gray-300">Non-psychoactive, anti-inflammatory, reduces anxiety, pain relief, neuroprotective properties</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-purple-300 mb-1">THC (Tetrahydrocannabinol)</p>
+                          <p className="text-gray-300">Psychoactive, pain relief, appetite stimulation, sleep aid, muscle relaxation</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Mushroom/Psychedelic Education */}
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Zap className="h-5 w-5 text-purple-400" />
+                      Psilocybin & Psychedelic Medicine
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-[hsl(240,29%,11%)] rounded-lg">
+                        <h4 className="font-semibold text-purple-400 mb-2">Therapeutic Benefits</h4>
+                        <ul className="text-sm space-y-1 text-gray-300">
+                          <li>• Treatment-resistant depression</li>
+                          <li>• PTSD and trauma therapy</li>
+                          <li>• End-of-life anxiety</li>
+                          <li>• Addiction treatment</li>
+                          <li>• Cluster headaches</li>
+                          <li>• OCD and anxiety disorders</li>
+                          <li>• Spiritual and personal growth</li>
+                        </ul>
+                      </div>
+                      <div className="p-4 bg-[hsl(240,29%,11%)] rounded-lg">
+                        <h4 className="font-semibold text-orange-400 mb-2">Safety & Set/Setting</h4>
+                        <ul className="text-sm space-y-1 text-gray-300">
+                          <li>• Professional supervision recommended</li>
+                          <li>• Safe, comfortable environment</li>
+                          <li>• Proper mental preparation</li>
+                          <li>• Screen for mental health conditions</li>
+                          <li>• Have a trusted trip sitter</li>
+                          <li>• Integration therapy after sessions</li>
+                          <li>• Respect the medicine</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="p-3 bg-purple-900/20 border border-purple-700 rounded-lg text-center">
+                        <h5 className="font-semibold text-purple-300 mb-1">Microdosing</h5>
+                        <p className="text-xs text-gray-300">0.1-0.3g every 3 days</p>
+                        <p className="text-xs text-gray-400">Creativity, mood, focus</p>
+                      </div>
+                      <div className="p-3 bg-blue-900/20 border border-blue-700 rounded-lg text-center">
+                        <h5 className="font-semibold text-blue-300 mb-1">Low Dose</h5>
+                        <p className="text-xs text-gray-300">0.5-1.5g</p>
+                        <p className="text-xs text-gray-400">Mild effects, introspection</p>
+                      </div>
+                      <div className="p-3 bg-red-900/20 border border-red-700 rounded-lg text-center">
+                        <h5 className="font-semibold text-red-300 mb-1">Therapeutic</h5>
+                        <p className="text-xs text-gray-300">2-3.5g</p>
+                        <p className="text-xs text-gray-400">Clinical supervision only</p>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-yellow-900/20 border border-yellow-700 rounded-lg">
+                      <h4 className="font-semibold text-yellow-400 mb-2 flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        Important Research Sources
+                      </h4>
+                      <div className="text-sm space-y-2">
+                        <p className="text-gray-300">Johns Hopkins studies show 80% success rate for treatment-resistant depression</p>
+                        <p className="text-gray-300">NYU research demonstrates significant reduction in end-of-life anxiety</p>
+                        <p className="text-gray-300">Imperial College London research on neuroplasticity and brain connectivity</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Legal Status & Advocacy */}
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Globe className="h-5 w-5 text-yellow-400" />
+                      Legal Status & Advocacy
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-[hsl(240,29%,11%)] rounded-lg">
+                          <h4 className="font-semibold text-green-400 mb-2">Cannabis Legal States</h4>
+                          <p className="text-xs text-gray-300 mb-2">Medical: 38 states + DC</p>
+                          <p className="text-xs text-gray-300 mb-2">Recreational: 21 states + DC</p>
+                          <p className="text-xs text-gray-400">Always check local laws</p>
+                        </div>
+                        <div className="p-4 bg-[hsl(240,29%,11%)] rounded-lg">
+                          <h4 className="font-semibold text-purple-400 mb-2">Psilocybin Progress</h4>
+                          <p className="text-xs text-gray-300 mb-1">Oregon: Legal therapy 2023</p>
+                          <p className="text-xs text-gray-300 mb-1">Colorado: Passed in 2022</p>
+                          <p className="text-xs text-gray-300 mb-1">Cities: Denver, Oakland, DC</p>
+                          <p className="text-xs text-gray-400">Research exemptions expanding</p>
+                        </div>
+                      </div>
+                      
+                      <div className="p-4 bg-blue-900/20 border border-blue-700 rounded-lg">
+                        <h4 className="font-semibold text-blue-400 mb-2">Advocacy Organizations</h4>
+                        <div className="grid md:grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-gray-300">• NORML (Cannabis reform)</p>
+                            <p className="text-gray-300">• Drug Policy Alliance</p>
+                            <p className="text-gray-300">• MAPS (Psychedelic research)</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-300">• Decriminalize Nature</p>
+                            <p className="text-gray-300">• Students for Liberty</p>
+                            <p className="text-gray-300">• Last Prisoner Project</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Sidebar Resources */}
+              <div className="space-y-6">
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="h-5 w-5 text-[hsl(151,100%,50%)]" />
+                      Educational Resources
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm">
+                    <div>
+                      <p className="font-medium text-green-400 mb-1">Cannabis Education</p>
+                      <p className="text-xs text-gray-300">Project CBD - Science-based information</p>
+                      <p className="text-xs text-gray-300">Leafly Learn - Strain database</p>
+                      <p className="text-xs text-gray-300">Americans for Safe Access</p>
+                    </div>
+                    <div>
+                      <p className="font-medium text-purple-400 mb-1">Psychedelic Research</p>
+                      <p className="text-xs text-gray-300">MAPS.org - Clinical trials</p>
+                      <p className="text-xs text-gray-300">Erowid - Experience database</p>
+                      <p className="text-xs text-gray-300">The Third Wave - Education</p>
+                    </div>
+                    <div>
+                      <p className="font-medium text-orange-400 mb-1">Harm Reduction</p>
+                      <p className="text-xs text-gray-300">DanceSafe - Testing services</p>
+                      <p className="text-xs text-gray-300">Zendo Project - Crisis support</p>
+                      <p className="text-xs text-gray-300">Fireside Project - Peer support</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass-effect bg-transparent border-white/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5 text-[hsl(151,100%,50%)]" />
+                      Latest Research
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-xs">
+                    <div className="p-3 bg-[hsl(240,29%,11%)] rounded-lg">
+                      <p className="font-medium text-green-400 mb-1">CBD for Epilepsy</p>
+                      <p className="text-gray-300">FDA-approved Epidiolex shows 50% seizure reduction</p>
+                    </div>
+                    <div className="p-3 bg-[hsl(240,29%,11%)] rounded-lg">
+                      <p className="font-medium text-purple-400 mb-1">Psilocybin for Depression</p>
+                      <p className="text-gray-300">Phase 3 trials show sustained remission rates</p>
+                    </div>
+                    <div className="p-3 bg-[hsl(240,29%,11%)] rounded-lg">
+                      <p className="font-medium text-blue-400 mb-1">MDMA for PTSD</p>
+                      <p className="text-gray-300">67% no longer meet PTSD criteria after therapy</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 

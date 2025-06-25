@@ -151,6 +151,15 @@ The application follows a monorepo pattern with shared TypeScript types and sche
 - Added community ride sharing system for health-related travel
 - Emphasized non-mainstream, non-pharmaceutical information sources
 
+**June 25, 2025 - Cannabis & Plant Medicine Education**
+- Added comprehensive cannabis medicine section with CBD/THC education
+- Included responsible use guidelines, dosing protocols, and safety information
+- Built psilocybin and psychedelic research database with clinical trial results
+- Added microdosing guides and therapeutic benefits documentation
+- Integrated legal status tracking and advocacy organization directory
+- Featured harm reduction resources and set/setting guidelines
+- Emphasized plant medicine as alternative to pharmaceutical dependency
+
 ## User Preferences
 
 ```
