@@ -181,6 +181,17 @@ The application follows a monorepo pattern with shared TypeScript types and sche
 - Maintained sensitive content warnings while preserving educational value
 - Emphasized independent sources avoiding mainstream media bias
 
+**June 25, 2025 - Privacy & Security Center with Tor Browser & PGP**
+- Built integrated Tor browser for anonymous .onion site access without external installation
+- Created automatic PGP key generation and management system
+- Implemented encrypted messaging with seamless key handling behind the scenes
+- Added Tor circuit visualization and connection management
+- Built onion bookmarks and secure browsing history
+- Created PGP message encryption/decryption interface with copy/paste functionality
+- Integrated secure chat with end-to-end encryption using PGP keys
+- Added contact key management and verification system
+- Maintained security best practices while simplifying user experience
+
 ## User Preferences
 
 ```
