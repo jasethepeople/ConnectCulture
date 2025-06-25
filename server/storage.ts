@@ -89,6 +89,10 @@ export interface IStorage {
   createHealthDiscussion(discussion: any): Promise<any>;
   getRideShares(): Promise<any[]>;
   createRideShare(rideShare: any): Promise<any>;
+  
+  // Age verification operations
+  verifyUserAge(userId: string, method: string, birthDate?: string): Promise<void>;
+  toggleAdultContent(userId: string, enabled: boolean): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -521,6 +525,30 @@ export class DatabaseStorage implements IStorage {
       RETURNING *
     `);
     return result.rows[0];
+  }
+
+  // Age verification operations
+  async verifyUserAge(userId: string, method: string, birthDate?: string): Promise<void> {
+    await db.execute(sql`
+      UPDATE users 
+      SET 
+        is_age_verified = true,
+        verification_method = ${method},
+        birth_date = ${birthDate ? new Date(birthDate) : null},
+        verified_at = NOW(),
+        updated_at = NOW()
+      WHERE id = ${userId}
+    `);
+  }
+
+  async toggleAdultContent(userId: string, enabled: boolean): Promise<void> {
+    await db.execute(sql`
+      UPDATE users 
+      SET 
+        adult_content_enabled = ${enabled},
+        updated_at = NOW()
+      WHERE id = ${userId}
+    `);
   }
 }
 

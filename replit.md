@@ -160,6 +160,15 @@ The application follows a monorepo pattern with shared TypeScript types and sche
 - Featured harm reduction resources and set/setting guidelines
 - Emphasized plant medicine as alternative to pharmaceutical dependency
 
+**June 25, 2025 - Adult Content & Age Verification System**
+- Implemented robust age verification system with multiple methods (birth date, ID upload, credit card)
+- Created secure adult content areas with smooth access but protected from minors
+- Added comprehensive content warnings and age gates for NSFW material
+- Built adult content toggle with verification requirements
+- Maintained complete free speech principles (only illegal content prohibited)
+- Designed system to be safe, respectable, and comfortable for all users
+- Ensured adult content remains completely separate from general platform areas
+
 ## User Preferences
 
 ```

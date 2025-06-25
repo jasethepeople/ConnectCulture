@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { AdultContentToggle } from "@/components/AdultContentToggle";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -17,7 +18,8 @@ import {
   Code,
   Save,
   Eye,
-  Sparkles
+  Sparkles,
+  Shield
 } from "lucide-react";
 
 const LAYOUTS = [

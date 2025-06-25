@@ -384,5 +384,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Age verification routes
+  app.post('/api/verify-age', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { method, birthDate, confirmations } = req.body;
+
+      // Validate confirmations
+      if (!confirmations?.age || !confirmations?.legal || !confirmations?.responsible) {
+        return res.status(400).json({ message: "All confirmations are required" });
+      }
+
+      // For birth date verification, check age
+      if (method === 'birthdate') {
+        if (!birthDate) {
+          return res.status(400).json({ message: "Birth date is required" });
+        }
+
+        const birth = new Date(birthDate);
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+          age--;
+        }
+
+        if (age < 18) {
+          return res.status(400).json({ message: "Must be 18 or older" });
+        }
+      }
+
+      // Update user verification status
+      await storage.verifyUserAge(userId, method, birthDate);
+      
+      res.json({ message: "Age verification successful" });
+    } catch (error) {
+      console.error("Error verifying age:", error);
+      res.status(500).json({ message: "Failed to verify age" });
+    }
+  });
+
+  app.post('/api/toggle-adult-content', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { enabled } = req.body;
+
+      // Check if user is age verified before enabling
+      if (enabled) {
+        const user = await storage.getUser(userId);
+        if (!user?.isAgeVerified) {
+          return res.status(400).json({ message: "Age verification required" });
+        }
+      }
+
+      await storage.toggleAdultContent(userId, enabled);
+      res.json({ message: enabled ? "Adult content enabled" : "Adult content disabled" });
+    } catch (error) {
+      console.error("Error toggling adult content:", error);
+      res.status(500).json({ message: "Failed to update adult content setting" });
+    }
+  });
+
   return httpServer;
 }
