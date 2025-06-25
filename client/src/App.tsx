@@ -15,6 +15,7 @@ import Apps from "@/pages/apps";
 import Health from "@/pages/health";
 import Safety from "@/pages/safety";
 import Privacy from "@/pages/privacy";
+import Civic from "@/pages/civic";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -34,6 +35,7 @@ function Router() {
           <Route path="/health" component={Health} />
           <Route path="/safety" component={Safety} />
           <Route path="/privacy" component={Privacy} />
+          <Route path="/civic" component={Civic} />
           <Route path="/customize" component={Customize} />
         </>
       )}

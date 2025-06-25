@@ -25,7 +25,8 @@ import {
   Store,
   Heart,
   Shield,
-  Lock
+  Lock,
+  Flag
 } from "lucide-react";
 
 export function Navigation() {
@@ -42,6 +43,7 @@ export function Navigation() {
     { path: "/health", label: "Health", icon: Heart },
     { path: "/safety", label: "Safety", icon: Shield },
     { path: "/privacy", label: "Privacy", icon: Lock },
+    { path: "/civic", label: "Civic", icon: Flag },
     { path: "/customize", label: "Customize", icon: Palette },
   ];
 
