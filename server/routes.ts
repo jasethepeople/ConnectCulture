@@ -36,8 +36,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Record profile view if authenticated
-      if (req.user?.claims?.sub) {
-        await storage.recordProfileView(req.user.claims.sub, user.id);
+      if ((req.user as any)?.claims?.sub) {
+        await storage.recordProfileView((req.user as any).claims.sub, user.id);
       }
 
       const viewCount = await storage.getProfileViewCount(user.id);
@@ -99,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const invite = await storage.getInviteByCode(code);
-      if (!invite || invite.currentUses >= invite.maxUses) {
+      if (!invite || (invite.currentUses || 0) >= (invite.maxUses || 1)) {
         return res.status(400).json({ message: "Invalid or expired invite code" });
       }
 

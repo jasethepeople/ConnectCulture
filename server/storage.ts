@@ -139,14 +139,14 @@ export class DatabaseStorage implements IStorage {
 
   async useInvite(code: string, userId: string): Promise<boolean> {
     const invite = await this.getInviteByCode(code);
-    if (!invite || invite.currentUses >= invite.maxUses) {
+    if (!invite || (invite.currentUses || 0) >= (invite.maxUses || 1)) {
       return false;
     }
 
     await db
       .update(invites)
       .set({
-        currentUses: invite.currentUses + 1,
+        currentUses: (invite.currentUses || 0) + 1,
         usedBy: userId,
       })
       .where(eq(invites.code, code));
@@ -201,10 +201,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getFiles(category?: string, limit = 50, offset = 0): Promise<File[]> {
-    let query = db.select().from(files).where(eq(files.isPublic, true));
+    let query = db.select().from(files);
     
     if (category) {
       query = query.where(and(eq(files.isPublic, true), eq(files.category, category)));
+    } else {
+      query = query.where(eq(files.isPublic, true));
     }
     
     return await query
@@ -240,10 +242,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPosts(userId?: string, limit = 20, offset = 0): Promise<Post[]> {
-    let query = db.select().from(posts).where(eq(posts.isPublic, true));
+    let query = db.select().from(posts);
     
     if (userId) {
       query = query.where(eq(posts.authorId, userId));
+    } else {
+      query = query.where(eq(posts.isPublic, true));
     }
     
     return await query
