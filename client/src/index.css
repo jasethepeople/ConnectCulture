@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+
+  /* SpaceLink custom colors */
+  --neon-green: hsl(151, 100%, 50%);
+  --neon-pink: hsl(0, 79%, 70%);
+  --space-purple: hsl(256, 87%, 66%);
+  --space-blue: hsl(217, 91%, 60%);
+  --dark-space: hsl(240, 50%, 7%);
+  --dark-secondary: hsl(240, 29%, 11%);
+}
+
+.light {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --accent: hsl(60, 4.8%, 95.9%);
+  --accent-foreground: hsl(24, 9.8%, 10%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    background: hsl(240, 50%, 7%);
+    color: hsl(0, 0%, 98%);
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    background: linear-gradient(45deg, hsl(256, 87%, 66%), hsl(333, 71%, 60%), hsl(151, 100%, 50%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(240, 29%, 11%);
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, hsl(256, 87%, 66%), hsl(333, 71%, 60%));
+    border-radius: 4px;
+  }
+}
+
+@keyframes pulse-neon {
+  0%, 100% { 
+    box-shadow: 0 0 5px hsl(151, 100%, 50%), 0 0 10px hsl(151, 100%, 50%), 0 0 15px hsl(151, 100%, 50%); 
+  }
+  50% { 
+    box-shadow: 0 0 10px hsl(151, 100%, 50%), 0 0 20px hsl(151, 100%, 50%), 0 0 30px hsl(151, 100%, 50%); 
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px hsl(151, 100%, 50%); }
+  to { text-shadow: 0 0 20px hsl(151, 100%, 50%), 0 0 30px hsl(151, 100%, 50%); }
+}
+
+.animate-pulse-neon {
+  animation: pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* Theme variations */
+.theme-cyberpunk {
+  --neon-green: hsl(151, 100%, 50%);
+  --neon-pink: hsl(0, 79%, 70%);
+  --space-purple: hsl(256, 87%, 66%);
+  --space-blue: hsl(217, 91%, 60%);
+}
+
+.theme-ocean {
+  --neon-green: hsl(180, 100%, 50%);
+  --neon-pink: hsl(195, 79%, 70%);
+  --space-purple: hsl(220, 87%, 66%);
+  --space-blue: hsl(200, 91%, 60%);
+}
+
+.theme-fire {
+  --neon-green: hsl(60, 100%, 50%);
+  --neon-pink: hsl(15, 79%, 70%);
+  --space-purple: hsl(20, 87%, 66%);
+  --space-blue: hsl(35, 91%, 60%);
+}
+
+.theme-matrix {
+  --neon-green: hsl(120, 100%, 50%);
+  --neon-pink: hsl(135, 79%, 70%);
+  --space-purple: hsl(100, 87%, 66%);
+  --space-blue: hsl(140, 91%, 60%);
+}
