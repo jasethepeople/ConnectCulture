@@ -38,6 +38,7 @@ export interface IStorage {
   searchUsers(query: string): Promise<User[]>;
   
   // Invite operations
+  getInvites(): Promise<Invite[]>;
   createInvite(invite: InsertInvite): Promise<Invite>;
   getInviteByCode(code: string): Promise<Invite | undefined>;
   useInvite(code: string, userId: string): Promise<boolean>;
@@ -149,6 +150,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Invite operations
+  async getInvites(): Promise<Invite[]> {
+    return await db.select().from(invites);
+  }
+
   async createInvite(invite: InsertInvite): Promise<Invite> {
     const [newInvite] = await db.insert(invites).values(invite).returning();
     return newInvite;

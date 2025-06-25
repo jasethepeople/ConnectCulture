@@ -26,6 +26,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Invite routes - CRITICAL for registration
+  app.get('/api/invites', async (req, res) => {
+    try {
+      const invites = await storage.getInvites();
+      res.json(invites);
+    } catch (error) {
+      console.error("Error fetching invites:", error);
+      res.status(500).json({ message: "Failed to fetch invites" });
+    }
+  });
+
+  app.post('/api/validate-invite', async (req, res) => {
+    try {
+      const { code } = req.body;
+      const invite = await storage.getInviteByCode(code);
+      
+      if (!invite) {
+        return res.status(404).json({ message: "Invalid invite code" });
+      }
+      
+      if (invite.currentUses >= invite.maxUses) {
+        return res.status(400).json({ message: "Invite code has been used up" });
+      }
+      
+      if (invite.expiresAt && new Date() > invite.expiresAt) {
+        return res.status(400).json({ message: "Invite code has expired" });
+      }
+      
+      res.json({ valid: true, invite });
+    } catch (error) {
+      console.error("Error validating invite:", error);
+      res.status(500).json({ message: "Failed to validate invite" });
+    }
+  });
+
   // User routes
   app.get('/api/users/profile/:username', async (req, res) => {
     try {
