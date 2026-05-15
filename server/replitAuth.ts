@@ -128,9 +128,16 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  // Support custom session auth (username/password or demo login)
+  const session = req.session as any;
+  if (session?.userId) {
+    (req as any).user = { claims: { sub: session.userId } };
+    return next();
+  }
+
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated() || !user?.expires_at) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 

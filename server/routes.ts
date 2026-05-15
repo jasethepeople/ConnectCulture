@@ -7,6 +7,19 @@ import { insertInviteSchema, insertFileSchema, insertPostSchema, insertCommentSc
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
+
+function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${hash}`;
+}
+
+function verifyPassword(password: string, stored: string): boolean {
+  const [salt, hash] = stored.split(":");
+  const inputHash = crypto.scryptSync(password, salt, 64).toString("hex");
+  return hash === inputHash;
+}
 
 const upload = multer({ dest: "uploads/" });
 
@@ -24,6 +37,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
+  });
+
+  // Custom registration with invite code
+  app.post('/api/auth/register', async (req: any, res) => {
+    try {
+      const { inviteCode, username, email, password, displayName } = req.body;
+      if (!inviteCode || !username || !password || !displayName) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+
+      const invite = await storage.getInviteByCode(inviteCode);
+      if (!invite || (invite.currentUses || 0) >= (invite.maxUses || 1)) {
+        return res.status(400).json({ message: "Invalid or expired invite code" });
+      }
+
+      const existing = await storage.getUserByUsername(username);
+      if (existing) {
+        return res.status(400).json({ message: "Username already taken" });
+      }
+
+      const userId = crypto.randomUUID();
+      const hashed = hashPassword(password);
+
+      const user = await storage.upsertUser({
+        id: userId,
+        email: email || null,
+        firstName: displayName,
+        lastName: null,
+        profileImageUrl: null,
+      });
+      await storage.updateUser(userId, { username, displayName, password: hashed });
+      await storage.useInvite(inviteCode, userId);
+
+      (req.session as any).userId = userId;
+      res.json({ success: true, user: { ...user, username, displayName } });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  // Custom login
+  app.post('/api/auth/login', async (req: any, res) => {
+    try {
+      const { username, password } = req.body;
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password required" });
+      }
+
+      const user = await storage.getUserByUsername(username);
+      if (!user || !user.password) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+
+      if (!verifyPassword(password, user.password)) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+
+      (req.session as any).userId = user.id;
+      res.json({ success: true, user });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Demo login — creates/reuses a demo account, no credentials needed
+  app.post('/api/auth/demo', async (req: any, res) => {
+    try {
+      const demoId = "demo-user-spacelink";
+      let user = await storage.getUser(demoId);
+      if (!user) {
+        user = await storage.upsertUser({
+          id: demoId,
+          email: "demo@spacelink.app",
+          firstName: "Demo",
+          lastName: "Explorer",
+          profileImageUrl: null,
+        });
+        await storage.updateUser(demoId, {
+          username: "demo_explorer",
+          displayName: "Demo Explorer",
+          tagline: "Just exploring SpaceLink!",
+        });
+        user = (await storage.getUser(demoId))!;
+      }
+      (req.session as any).userId = demoId;
+      res.json({ success: true, user });
+    } catch (error) {
+      console.error("Demo login error:", error);
+      res.status(500).json({ message: "Demo login failed" });
+    }
+  });
+
+  // Custom logout
+  app.post('/api/auth/custom-logout', (req: any, res) => {
+    delete (req.session as any).userId;
+    req.session.destroy(() => {
+      res.json({ success: true });
+    });
   });
 
   // Invite routes - CRITICAL for registration

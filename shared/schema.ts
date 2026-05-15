@@ -41,6 +41,7 @@ export const users = pgTable("users", {
   widgets: jsonb("widgets").default([]),
   profileSettings: jsonb("profile_settings").default({}),
   isActive: boolean("is_active").default(true),
+  password: varchar("password"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
